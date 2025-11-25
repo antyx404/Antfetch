@@ -2,7 +2,12 @@
 Another Rust fetch
 
 ## Building
-Using `cargo` :
+First you need to clone this repository:
+```bash
+git clone https://github.com/antyx404/Antfetch.git
+```
+
+Then compile it using `cargo` :
 ```bash
 cargo build --release
 ./target/release/antfetch
