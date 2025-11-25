@@ -1,5 +1,4 @@
 use std::collections::HashMap;
-use std::process::Command;
 use std::env::consts;
 
 struct SystemInfo {
@@ -29,7 +28,8 @@ impl SystemInfo {
         if let Ok(content) = std::fs::read_to_string("/etc/os-release") {
             for line in content.lines() {
                 if line.starts_with("PRETTY_NAME=") {
-                    return line.trim_start_matches("PRETTY_NAME=")
+                    return line
+                        .trim_start_matches("PRETTY_NAME=")
                         .trim_matches('"')
                         .to_string();
                 }
@@ -92,7 +92,8 @@ impl SystemInfo {
             let mut mem_info = HashMap::new();
             for line in content.lines() {
                 if let Some((key, value)) = line.split_once(':') {
-                    let num: u64 = value.trim()
+                    let num: u64 = value
+                        .trim()
                         .split_whitespace()
                         .next()
                         .unwrap_or("0")
@@ -102,8 +103,9 @@ impl SystemInfo {
                 }
             }
 
-            if let (Some(&total), Some(&available)) = 
-                (mem_info.get("MemTotal"), mem_info.get("MemAvailable")) {
+            if let (Some(&total), Some(&available)) =
+                (mem_info.get("MemTotal"), mem_info.get("MemAvailable"))
+            {
                 let used = total - available;
                 let used_gb = used as f64 / 1024.0 / 1024.0;
                 let total_gb = total as f64 / 1024.0 / 1024.0;
@@ -151,14 +153,22 @@ fn main() {
         ("Memory", info.memory),
     ];
 
-    let text_start_position = 22;
+    let text_start_position = 25;
 
     for i in 0..logo.len() {
         if i >= 1 && i <= 7 {
             let (label, value) = &labels[i - 1];
             let info_text = format!("{}{}:{} {}", color, label, reset, value);
-            let padding = text_start_position.saturating_sub(logo[i].len());
-            println!("{}{}{:padding$}{}", color, logo[i], reset, "", info_text, padding = padding);
+
+            let current_logo_length = logo[i].len();
+            let padding_needed = if text_start_position > current_logo_length {
+                text_start_position - current_logo_length
+            } else {
+                1
+            };
+
+            print!("{}{}{}", color, logo[i], reset);
+            println!("{:width$}{}", "", info_text, width = padding_needed);
         } else {
             println!("{}{}{}", color, logo[i], reset);
         }
