@@ -153,7 +153,7 @@ fn main() {
         ("Memory", info.memory),
     ];
 
-    let text_start_position = 25;
+    let text_start_position = 30;
 
     for i in 0..logo.len() {
         if i >= 1 && i <= 7 {
