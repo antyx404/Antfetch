@@ -74,7 +74,12 @@ impl SystemInfo {
             for line in content.lines() {
                 if line.starts_with("model name") {
                     if let Some(name) = line.split(':').nth(1) {
-                        return name.trim().to_string();
+                        let full_name = name.trim().to_string();
+                        // Skróć nazwę procesora jeśli jest zbyt długa
+                        if full_name.len() > 30 {
+                            return format!("{}...", &full_name[..27]);
+                        }
+                        return full_name;
                     }
                 }
             }
@@ -146,21 +151,16 @@ fn main() {
         ("Memory", info.memory),
     ];
 
-    let max_logo_lines = logo.len();
-    let max_info_lines = labels.len();
+    let text_start_position = 22;
 
-    for i in 0..std::cmp::max(max_logo_lines, max_info_lines) {
-        if i < logo.len() {
-            print!("{}{}{}", color, logo[i], reset);
+    for i in 0..logo.len() {
+        if i >= 1 && i <= 7 {
+            let (label, value) = &labels[i - 1];
+            let info_text = format!("{}{}:{} {}", color, label, reset, value);
+            let padding = text_start_position.saturating_sub(logo[i].len());
+            println!("{}{}{:padding$}{}", color, logo[i], reset, "", info_text, padding = padding);
         } else {
-            print!("{:width$}", "", width = logo[0].len());
-        }
-
-        if i < labels.len() {
-            let (label, value) = &labels[i];
-            println!("  {}{}:{} {}", color, label, reset, value);
-        } else {
-            println!();
+            println!("{}{}{}", color, logo[i], reset);
         }
     }
 }
