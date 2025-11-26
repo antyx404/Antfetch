@@ -4,7 +4,7 @@ Another Rust fetch
 ## Building
 First you need to clone this repository:
 ```bash
-git clone https://github.com/antyx404/Antfetch.git
+git clone -b dev --single-branch https://github.com/antyx404/Antfetch.git
 ```
 
 Then compile it using `cargo` :
