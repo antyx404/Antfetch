@@ -175,9 +175,11 @@ fn main() {
     let color = get_color_code();
     let reset = "\x1b[0m";
 
+    let user_host = format!("{}{}@{}{}", color, info.user, info.hostname, reset);
+    
     let labels = vec![
         ("OS", info.os),
-        ("Host", info.hostname),
+        ("Host", info.hostname.clone()),
         ("Kernel", info.kernel),
         ("Uptime", info.uptime),
         ("Shell", info.shell),
@@ -187,11 +189,8 @@ fn main() {
 
     let text_start_position = 30;
     
-    // user@host width
     let total_width = text_start_position + 30;
 
-    // user@host ->
-    let user_host = format!("{}{}@{}{}", color, info.user, info.hostname, reset);
     println!("{:>width$}", user_host, width = total_width);
 
     for i in 0..logo.len() {
